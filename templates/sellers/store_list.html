@@ -1,0 +1,13 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Lojas pendentes de aprovação</h2>
+{% if stores %}
+  <ul>
+    {% for s in stores %}
+      <li><a href="{% url 'sellers:store_review' s.pk %}">{{ s.name }} - {{ s.owner.username }}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Não há solicitações pendentes.</p>
+{% endif %}
+{% endblock %}

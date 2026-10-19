@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>KLYA Marketplace</title>
+</head>
+<body>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <header>
+    <nav>
+      <a href="{% url 'core:home' %}">Início</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}">Minha conta</a>
+        <a href="{% url 'sellers:dashboard' %}">Painel do vendedor</a>
+        {% if user.is_staff %}
+          <a href="{% url 'sellers:store_list' %}">Lojas pendentes</a>
+        {% endif %}
+        <a href="{% url 'accounts:logout' %}">Sair</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Entrar</a>
+        <a href="{% url 'accounts:signup' %}">Cadastrar</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

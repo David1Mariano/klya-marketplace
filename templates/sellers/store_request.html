@@ -1,0 +1,9 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Solicitar abertura de loja</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Enviar solicitação</button>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Analisar solicitação de loja</h2>
+<p>Solicitante: {{ store.owner.username }}</p>
+<p>Loja: {{ store.name }}</p>
+<p>Descrição: {{ store.description }}</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Salvar</button>
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Minha conta</h2>
+<p>Usuário: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+{% if can_request_store %}
+  <a href="{% url 'sellers:store_request' %}">Solicitar abertura de loja</a>
+{% endif %}
+{% if store %}
+  <p>Status da loja: {{ store.get_status_display }}</p>
+  {% if store.status == 'rejected' and store.rejection_reason %}
+    <p>Motivo da rejeição: {{ store.rejection_reason }}</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

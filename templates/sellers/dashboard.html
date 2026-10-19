@@ -1,0 +1,18 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Painel do vendedor</h2>
+{% if store %}
+  <p>Loja: {{ store.name }}</p>
+  <p>Status: {{ store.get_status_display }}</p>
+  {% if store.status == 'pending' %}
+    <p>Sua solicitação está aguardando aprovação.</p>
+  {% elif store.status == 'approved' %}
+    <p>Sua loja está aprovada.</p>
+  {% elif store.status == 'rejected' %}
+    <p>Sua loja foi rejeitada.</p>
+    {% if store.rejection_reason %}<p>Motivo: {{ store.rejection_reason }}</p>{% endif %}
+  {% endif %}
+{% else %}
+  <p>Você não possui loja cadastrada.</p>
+{% endif %}
+{% endblock %}
