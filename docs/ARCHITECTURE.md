@@ -20,3 +20,10 @@ Django 6.1.2 / Python 3.14 / PostgreSQL 17. Monolito modular. psycopg3.
 - Fluxo de aprovação/rejeição por admin.
 - Proteções servidor (decorators, ownership).
 
+
+\n## Etapa D - Catálogo e Produtos (implementado)
+- Catálogo público mostra apenas produtos publicados de lojas aprovadas.
+- Busca/filtro por categoria, detalhes de produto.
+- Gerenciamento de produtos por vendedores com loja aprovada (criar/editar, draft/publicado).
+- Proteções: não expor produtos de outros, não mostrar produtos não publicados ou de lojas não aprovadas.
+

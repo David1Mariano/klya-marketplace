@@ -103,3 +103,5 @@ if not DEBUG:
 LOGIN_REDIRECT_URL = "accounts:profile"
 LOGOUT_REDIRECT_URL = "core:home"
 LOGIN_URL = "accounts:login"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

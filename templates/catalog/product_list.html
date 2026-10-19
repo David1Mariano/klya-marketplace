@@ -1,0 +1,28 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Catálogo</h2>
+
+<form method="get">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar produtos">
+  <select name="category">
+    <option value="">Todas as categorias</option>
+    {% for cat in categories %}
+      <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Filtrar</button>
+</form>
+
+{% if products %}
+  <ul>
+    {% for product in products %}
+      <li>
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        - R$ {{ product.price }} - Loja: {{ product.store.name }} - Categoria: {{ product.category.name }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Nenhum produto encontrado.</p>
+{% endif %}
+{% endblock %}

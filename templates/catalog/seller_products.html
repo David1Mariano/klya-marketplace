@@ -1,0 +1,17 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>Meus produtos</h2>
+<p><a href="{% url 'catalog:product_create' %}">Cadastrar novo produto</a></p>
+{% if products %}
+  <ul>
+    {% for product in products %}
+      <li>
+        {{ product.name }} - {{ product.get_status_display }} - {% if product.is_active %}Ativo{% else %}Inativo{% endif %}
+        <a href="{% url 'catalog:product_edit' product.pk %}">Editar</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Você ainda não possui produtos cadastrados.</p>
+{% endif %}
+{% endblock %}

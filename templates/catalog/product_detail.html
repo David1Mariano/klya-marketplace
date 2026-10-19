@@ -1,0 +1,12 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<h2>{{ product.name }}</h2>
+<p>Loja: {{ product.store.name }}</p>
+<p>Categoria: {{ product.category.name }}</p>
+<p>Preço: R$ {{ product.price }}</p>
+<p>Estoque: {{ product.stock }}</p>
+{% if product.image %}
+  <img src="{{ product.image.url }}" alt="{{ product.name }}">
+{% endif %}
+<p>{{ product.description }}</p>
+{% endblock %}
