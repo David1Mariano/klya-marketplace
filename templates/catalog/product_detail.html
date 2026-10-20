@@ -9,4 +9,19 @@
   <img src="{{ product.image.url }}" alt="{{ product.name }}">
 {% endif %}
 <p>{{ product.description }}</p>
+
+{% if user.is_authenticated %}
+  {% if product.status == 'published' and product.is_active and product.store.status == 'approved' and product.stock > 0 %}
+    <form action="{% url 'cart:cart_add' product.id %}" method="post">
+      {% csrf_token %}
+      <label for="quantity">Quantidade:</label>
+      <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
+      <button type="submit">Adicionar ao carrinho</button>
+    </form>
+  {% else %}
+    <p>Produto indisponível para compra.</p>
+  {% endif %}
+{% else %}
+  <p><a href="{% url 'accounts:login' %}">Faça login</a> para adicionar ao carrinho.</a></p>
+{% endif %}
 {% endblock %}

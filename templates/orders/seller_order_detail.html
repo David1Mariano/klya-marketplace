@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Pedido do vendedor #{{ seller_order.order.pk }}</h2>
+<p>Loja: {{ store.name }}</p>
+<p>Comprador: {{ seller_order.order.buyer.username }}</p>
+<p>Status: <strong>{{ seller_order.get_status_display }}</strong></p>
+<p>Subtotal: <strong>R$ {{ seller_order.subtotal }}</strong></p>
+<p>Criado em: {{ seller_order.created_at|date:"d/m/Y H:i" }}</p>
+
+{% if commission %}
+  <h3>Comissão da KLYA</h3>
+  <p>Taxa aplicada: {{ commission.rate|floatformat:2 }}%</p>
+  <p>Valor bruto: R$ {{ commission.gross_amount }}</p>
+  <p>Comissão: R$ {{ commission.commission_amount }}</p>
+  <p>Valor líquido ao vendedor: <strong>R$ {{ commission.net_amount }}</strong></p>
+{% endif %}
+
+<h3>Itens</h3>
+<ul>
+  {% for item in items %}
+    <li>
+      {{ item.product_name }} - {{ item.quantity }}x
+      - R$ {{ item.unit_price }} = R$ {{ item.subtotal }}
+    </li>
+  {% endfor %}
+</ul>
+
+<p><a href="{% url 'orders:seller_order_list' %}">Voltar aos pedidos recebidos</a></p>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Seu carrinho</h2>
+
+{% if not cart %}
+  <p>Seu carrinho está vazio.</p>
+  <p><a href="{% url 'catalog:product_list' %}">Continuar comprando</a></p>
+{% else %}
+  <ul>
+    {% for item in cart %}
+      <li>
+        <strong>{{ item.product.name }}</strong> - Loja: {{ item.product.store.name }}
+        <br>
+        Preço unitário: R$ {{ item.price }} |
+        Quantidade:
+        <form action="{% url 'cart:cart_update' item.product.id %}" method="post" style="display:inline">
+          {% csrf_token %}
+          <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" style="width:5em">
+          <button type="submit">Atualizar</button>
+        </form>
+        |
+        <form action="{% url 'cart:cart_remove' item.product.id %}" method="post" style="display:inline">
+          {% csrf_token %}
+          <button type="submit">Remover</button>
+        </form>
+        <br>
+        Subtotal: R$ {{ item.subtotal }}
+      </li>
+    {% endfor %}
+  </ul>
+  <p><strong>Total do carrinho: R$ {{ total }}</strong></p>
+  <p><a href="{% url 'orders:checkout_review' %}">Revisar compra e finalizar</a></p>
+  <p><a href="{% url 'catalog:product_list' %}">Continuar comprando</a></p>
+{% endif %}
+{% endblock %}

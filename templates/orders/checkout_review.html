@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Revisão da compra</h2>
+
+{% if not summary.stores %}
+  <p>Seu carrinho está vazio.</p>
+  <p><a href="{% url 'cart:cart_detail' %}">Voltar ao carrinho</a></p>
+{% else %}
+  <p>Total da compra: <strong>R$ {{ total }}</strong></p>
+  <p>Taxa de comissão da KLYA: {{ summary.rate|floatformat:2 }}%</p>
+
+  <form method="post" action="{% url 'orders:checkout' %}">
+    {% csrf_token %}
+    {% for store_data in summary.stores %}
+      <h3>Loja: {{ store_data.store.name }}</h3>
+      <ul>
+        {% for item in store_data.items %}
+          <li>
+            {{ item.product.name }} - {{ item.quantity }}x
+            - R$ {{ item.unit_price }} cada
+            - Subtotal: R$ {{ item.subtotal }}
+            <br>
+            <small>Estoque disponível: {{ item.product.stock }}</small>
+          </li>
+        {% endfor %}
+      </ul>
+      <p>
+        Subtotal da loja: <strong>R$ {{ store_data.subtotal }}</strong> |
+        Comissão KLYA: R$ {{ store_data.commission }} |
+        Líquido ao vendedor: R$ {{ store_data.net }}
+      </p>
+    {% endfor %}
+
+    <hr>
+    <p><strong>Total geral: R$ {{ total }}</strong></p>
+    <button type="submit">Confirmar pedido e ir para pagamento simulado</button>
+  </form>
+
+  <p><a href="{% url 'cart:cart_detail' %}">Voltar ao carrinho</a></p>
+{% endif %}
+{% endblock %}

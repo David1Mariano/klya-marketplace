@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Pagamento simulado - Pedido #{{ order.pk }}</h2>
+
+<p>Valor: <strong>R$ {{ order.total }}</strong></p>
+<p>Status atual: {{ payment.get_status_display }}</p>
+
+{% if is_terminal %}
+  <p><strong>Este pagamento já foi processado.</strong></p>
+{% else %}
+  <form method="post" action="{% url 'payments:simulate' order.pk %}">
+    {% csrf_token %}
+    <p>Seja qual for a opção escolhida, isto é apenas uma simulação. Nenhum dado financeiro real é coletado.</p>
+    <button type="submit" name="action" value="approve">Aprovar pagamento (simulação)</button>
+    <button type="submit" name="action" value="cancel">Cancelar pagamento</button>
+    <button type="submit" name="action" value="fail">Simular falha</button>
+  </form>
+{% endif %}
+
+<p><a href="{% url 'orders:order_detail' order.pk %}">Voltar ao pedido</a></p>
+{% endblock %}

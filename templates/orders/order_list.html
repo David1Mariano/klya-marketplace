@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Meus pedidos</h2>
+
+{% if not orders %}
+  <p>Você não possui pedidos.</p>
+{% else %}
+  <ul>
+    {% for order in orders %}
+      <li>
+        <a href="{% url 'orders:order_detail' order.pk %}">Pedido #{{ order.pk }}</a>
+        - {{ order.get_status_display }}
+        - Total: R$ {{ order.total }}
+        - {{ order.created_at|date:"d/m/Y H:i" }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<p><a href="{% url 'catalog:product_list' %}">Continuar comprando</a></p>
+{% endblock %}

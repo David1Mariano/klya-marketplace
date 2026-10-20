@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Pedido #{{ order.pk }}</h2>
+<p>Status: <strong>{{ order.get_status_display }}</strong></p>
+<p>Total: <strong>R$ {{ order.total }}</strong></p>
+<p>Criado em: {{ order.created_at|date:"d/m/Y H:i" }}</p>
+
+<h3>Itens por vendedor</h3>
+{% for so in seller_orders %}
+  <h4>Loja: {{ so.store.name }}</h4>
+  <p>Status do pedido do vendedor: {{ so.get_status_display }}</p>
+  <p>Subtotal: R$ {{ so.subtotal }}</p>
+  {% if so.commission %}
+    <p>
+      Comissão KLYA: R$ {{ so.commission.commission_amount }} |
+      Líquido ao vendedor: R$ {{ so.commission.net_amount }}
+    </p>
+  {% endif %}
+  <ul>
+    {% for item in so.items.all %}
+      <li>{{ item.product_name }} - {{ item.quantity }}x - R$ {{ item.unit_price }} = R$ {{ item.subtotal }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+
+{% if payment %}
+  <h3>Pagamento</h3>
+  <p>Status: {{ payment.get_status_display }}</p>
+  <p>Valor: R$ {{ payment.amount }}</p>
+  <p>Método: {{ payment.method }}</p>
+  {% if not payment.status|lower in "approved,cancelled,failed" %}
+    <p><a href="{% url 'payments:simulate' order.pk %}">Ir para pagamento simulado</a></p>
+  {% endif %}
+{% endif %}
+
+<p><a href="{% url 'orders:order_list' %}">Voltar aos meus pedidos</a></p>
+{% endblock %}

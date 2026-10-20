@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Pedidos recebidos - {{ store.name }}</h2>
+
+{% if not seller_orders %}
+  <p>Você não possui pedidos recebidos.</p>
+{% else %}
+  <ul>
+    {% for so in seller_orders %}
+      <li>
+        <a href="{% url 'orders:seller_order_detail' so.pk %}">Pedido #{{ so.order.pk }}</a>
+        (comprador: {{ so.order.buyer.username }})
+        - {{ so.get_status_display }}
+        - Subtotal: R$ {{ so.subtotal }}
+        - {{ so.created_at|date:"d/m/Y H:i" }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<p><a href="{% url 'sellers:dashboard' %}">Voltar ao painel</a></p>
+{% endblock %}
