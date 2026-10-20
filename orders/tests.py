@@ -588,3 +588,89 @@ class OrderCheckoutTests(TestCase):
         new_order = Order.objects.exclude(pk=order_1.pk).first()
         self.assertIsNotNone(new_order)
         self.assertEqual(new_order.status, Order.Status.PENDING)
+
+
+class SellerOrderViewTests(TestCase):
+    def setUp(self):
+        self.seller_a = User.objects.create_user(
+            username="seller_a", password="TestPass1234!"
+        )
+        self.seller_b = User.objects.create_user(
+            username="seller_b", password="TestPass1234!"
+        )
+        self.buyer = User.objects.create_user(
+            username="buyer", password="TestPass1234!"
+        )
+
+        self.store_a = Store.objects.create(
+            owner=self.seller_a, name="Loja A", status="approved"
+        )
+        self.store_b = Store.objects.create(
+            owner=self.seller_b, name="Loja B", status="approved"
+        )
+
+        self.cat = Category.objects.create(name="Eletrônicos", slug="eletronicos")
+
+        self.product_a = Product.objects.create(
+            store=self.store_a,
+            category=self.cat,
+            name="Celular",
+            slug="celular",
+            price=Decimal("100.00"),
+            stock=5,
+            status=Product.Status.PUBLISHED,
+        )
+        self.product_b = Product.objects.create(
+            store=self.store_b,
+            category=self.cat,
+            name="Carregador",
+            slug="carregador",
+            price=Decimal("30.00"),
+            stock=2,
+            status=Product.Status.PUBLISHED,
+        )
+
+        self.order = Order.objects.create(buyer=self.buyer, total=Decimal("130.00"))
+        self.so_a = SellerOrder.objects.create(
+            order=self.order, store=self.store_a, subtotal=Decimal("100.00")
+        )
+        self.so_b = SellerOrder.objects.create(
+            order=self.order, store=self.store_b, subtotal=Decimal("30.00")
+        )
+
+    def test_seller_detail_accessible_by_responsible_seller(self):
+        self.client.login(username="seller_a", password="TestPass1234!")
+        response = self.client.get(
+            reverse("orders:seller_order_detail", args=[self.so_a.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.store_a.name)
+
+    def test_seller_detail_blocked_for_other_seller(self):
+        self.client.login(username="seller_b", password="TestPass1234!")
+        response = self.client.get(
+            reverse("orders:seller_order_detail", args=[self.so_a.pk])
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_seller_detail_blocked_for_buyer(self):
+        self.client.login(username="buyer", password="TestPass1234!")
+        response = self.client.get(
+            reverse("orders:seller_order_detail", args=[self.so_a.pk])
+        )
+        # Comprador sem loja e redirecionado (bloqueio de acesso).
+        self.assertEqual(response.status_code, 302)
+
+    def test_seller_list_accessible_by_responsible_seller(self):
+        self.client.login(username="seller_a", password="TestPass1234!")
+        response = self.client.get(reverse("orders:seller_order_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.store_a.name)
+        self.assertContains(response, self.so_a.pk)
+
+    def test_seller_list_only_shows_own_store_orders(self):
+        self.client.login(username="seller_a", password="TestPass1234!")
+        response = self.client.get(reverse("orders:seller_order_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.store_a.name)
+        self.assertNotContains(response, self.store_b.name)

@@ -121,8 +121,10 @@ def seller_order_detail(request, pk):
         messages.warning(request, "Você não possui uma loja cadastrada.")
         return redirect("accounts:profile")
 
-    seller_order = get_object_or_404(SellerOrder, pk=pk, store=store).select_related(
-        "order__buyer", "store"
+    seller_order = get_object_or_404(
+        SellerOrder.objects.select_related("order__buyer", "store"),
+        pk=pk,
+        store=store,
     )
     items = seller_order.items.select_related("product").all()
     try:
